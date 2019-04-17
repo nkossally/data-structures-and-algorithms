@@ -6,7 +6,7 @@
 // Prompt:
 // -------
 //
-// Given the implementation of a Doubly Linked List, design and implement 
+// Given the implementation of a Doubly Linked List, design and implement
 // an LRU, or Least Recently Used, cache.
 //
 // ------------
@@ -58,44 +58,64 @@
 // TODO: Implement the LRUCacheItem class here
 class LRUCacheItem {
   constructor(val = null, key = null) {
-
+    this.val = val;
+    this.key = key;
   }
 }
 
 // TODO: Implement the LRUCacheItem class here
 class LRUCache {
   constructor(limit) {
-
+    this.hash = {};
+    this.list = new List();
+    this.limit = limit;
+    this.length = 0;
   }
 
   // TODO: Implement the size method here
   size() {
-
+    return this.length;
   }
 
   // TODO: Implement the get method here
   get(key) {
-
+    if (this.hash[key]) {
+      this.promote(this.hash[key].val);
+      return this.hash[key].val.val;
+    } else {
+      return null;
+    }
   }
 
   // TODO: Implement the set method here
   set(key, val) {
+    if (this.hash[key]) {
+      this.list.moveToEnd(this.hash[key].val);
+      this.list.pop();
+    }
+    let head = this.list.unshift(val);
+    let item = new LRUCacheItem(head, key);
+    this.hash[key] = item;
+    if (this.length < this.limit) {
+      this.length += 1;
+    } else {
+      delete this.hash[this.list.tail.val];
 
+      this.list.pop();
+    }
   }
 
   isFull() {
-    
+    return this.size === this.limit;
   }
 
-  prune() {
-
-  }
+  prune() {}
 
   promote(item) {
-
+    // console.log(item);
+    this.list.moveToFront(item);
   }
 }
-
 
 // ----------------------------------------
 // Given: Doubly Linked List - Do Not Edit!
@@ -106,7 +126,6 @@ class ListNode {
     this.val = val;
     this.next = next;
   }
-
 
   delete() {
     if (this.prev) this.prev.next = this.next;
